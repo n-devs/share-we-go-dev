@@ -1,6 +1,6 @@
 import React from 'react'
 import io from "socket.io-client";
-const socket = io('https://9000-dot-3945732-dot-devshell.appspot.com/socket.io/?EIO=3&transport=polling&t=MksQyeG')
+const socket = io('localhost:9000')
 
 function GeoLocationIO() {
 

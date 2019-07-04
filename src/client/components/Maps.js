@@ -1,32 +1,5 @@
 import React from 'react';
 import { Map } from '../lib/maps'
-import io from "socket.io-client";
-const socket = io('ws://localhost:9000')
-
-function GeoLocationIO() {
-
-    navigator.geolocation.getCurrentPosition(
-        function (position) {
-            // console.log(position);
-
-            socket.emit('position', {
-                coords: {
-                    accuracy: position.coords.accuracy,
-                    altitude: position.coords.altitude,
-                    altitudeAccuracy: position.coords.altitudeAccuracy,
-                    heading: position.coords.heading,
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    speed: position.coords.speed
-                },
-                timestamp: position.timestamp
-            })
-        },
-        function (error) { console.log(error) },
-        { enableHighAccuracy: true, timeout: 100, distanceFilter: 0 },
-    );
-
-}
 
 
 
@@ -42,11 +15,6 @@ class Maps extends React.Component {
             },
             friends: {},
         }
-    }
-    componentDidMount() {
-        setInterval(GeoLocationIO, 1000 / 60)
-
-        socket.on('otherPositions', position => this.setState({ position: position }))
     }
 
     render() {
@@ -66,17 +34,39 @@ class Maps extends React.Component {
                         stylers: [{ visibility: 'off' }]
                     }]
                 }}
-                DrawingOnMap={(maps,map) => {
-                    var marker = new maps.Marker({
-                        position:{ lat: this.state.position.coords.latitude, lng: this.state.position.coords.longitude },
-                        icon: {
-                          path: maps.SymbolPath.CIRCLE,
-                          scale: 5
-                        },
-                        draggable: false,
-                        map: map
-                      });
-                }}
+                DrawingOnMap={(maps, map) => {
+                    let infoWindow = new maps.InfoWindow;
+
+                    // Try HTML5 geolocation.
+                    if (navigator.geolocation) {
+                        navigator.geolocation.watchPosition(function (position) {
+                            var pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+
+                            infoWindow.setPosition(pos);
+                            infoWindow.setContent(`lat: ${pos.lat} lng: ${pos.lng}`);
+                            infoWindow.open(map);
+                            map.setCenter(pos);
+                        }, function () {
+                            handleLocationError(true, infoWindow, map.getCenter());
+                        });
+                    } else {
+                        // Browser doesn't support Geolocation
+                        handleLocationError(false, infoWindow, map.getCenter());
+
+                    }
+
+                    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+                        infoWindow.open(map);
+                    }
+                }
+                }
             />
         )
     }
