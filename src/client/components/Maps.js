@@ -39,7 +39,7 @@ class Maps extends React.Component {
 
                     // Try HTML5 geolocation.
                     if (navigator.geolocation) {
-                        navigator.geolocation.watchPosition(function (position) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
                             var pos = {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude
@@ -51,7 +51,7 @@ class Maps extends React.Component {
                             map.setCenter(pos);
                         }, function () {
                             handleLocationError(true, infoWindow, map.getCenter());
-                        });
+                        },{maximumAge:500, timeout:0});
                     } else {
                         // Browser doesn't support Geolocation
                         handleLocationError(false, infoWindow, map.getCenter());
