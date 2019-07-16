@@ -23,7 +23,6 @@ const wrappedPromise = function () {
 }
 
 export class OverlayView extends React.Component {
-
   componentDidMount() {
     this.overlayViewPromise = wrappedPromise();
     this.renderOverlayView();
@@ -45,93 +44,97 @@ export class OverlayView extends React.Component {
   }
 
   renderOverlayView() {
-    const {
-      google,
-    } = this.props;
+    // var { google,elementType,setPaneName ,position} = this.props
 
-    if (!google) {
+    if (!window.google) {
       return null
     }
 
-
-
-
-    function USGSOverlay(elementType, setPaneName, position, bounds, children, getPixelPositionOffset, map) {
-
-      // Initialize all properties.
-      this.elementType = elementType;
-      this.setPaneName = setPaneName;
-      this.position = {
-        lat:function () {return position.lat},
-        lng:function() {return position.lng}
-    }
+    function USGSOverlay(google, elementType, latlng, bounds, map, args, setPaneName, children) {
+      // this.google = google;
+      this.elementType = "div";
+      this.latlng = latlng;
       this.bounds = bounds;
+      this.map = map;
+      this.args = args;
+      this.setPaneName = setPaneName;
       this.children = children;
-      this.getPixelPositionOffset = getPixelPositionOffset;
-
-      // Define a property to hold the image's div. We'll
-      // actually create this div upon receipt of the onAdd()
-      // method so we'll leave it null for now.
-
-
-
-
-
-      this.div = document.createElement('div');
-      this.div.margin = '0';
-      this.div.style.position = 'absolute';
-      // this.att = document.createAttribute('id')
-      // this.att.value = 'user'
-      // this.div.setAttributeNode(this.att)
-      this.div.innerHTML = prettyFormat(renderer.create(this.children), {
-        plugins: [ReactTestComponent],
-        printFunctionName: false
-      });
-
-      this.elementType.appendChild(this.div)
-
-      google.maps.OverlayView.preventMapHitsFrom(this.div);
-      // Explicitly call setMap on this overlay.
+      this.setMap(map);
     }
 
-    USGSOverlay.prototype = new google.maps.OverlayView;
+    USGSOverlay.prototype = new window.google.maps.OverlayView();
 
     USGSOverlay.prototype.onAdd = function () {
-      this.mapPanes = this.getPanes();
-      this.mapPanes[this.setPaneName].appendChild(this.div)
-      // this.setMap(this.map);
-    }
+      var self = this;
+      var div = this.div;
+      // const { google } = this.props
+      if (!div) {
+        // Generate marker html
+        div = this.div = document.createElement('div');
+        div.className = 'custom-marker';
+        div.style.position = 'absolute';
+        var innerDiv = document.createElement(`${elementType}`);
+        innerDiv.className = 'custom-marker-inner';
+        innerDiv.innerHTML = prettyFormat(renderer.create(this.children), {
+          plugins: [ReactTestComponent],
+          printFunctionName: false
+        });
+        div.appendChild(innerDiv);
 
-    USGSOverlay.prototype.draw = function () {
+        if (typeof (self.args.marker_id) !== 'undefined') {
+          div.dataset.marker_id = self.args.marker_id;
+        }
 
-      this.divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
-      // this.id = document.getElementById('user')
+        window.google.maps.event.addDomListener(div, "click", function (event) {
+          window.google.maps.event.trigger(self, "click");
+        });
 
-      // Hide the popup when it is far out of view.
-      this.display = Math.abs(this.divPosition.x) < 4000 && Math.abs(this.divPosition.y) < 4000 ?
-        'block' :
-        'none';
-
-      if (this.display === 'block') {
-        this.div.style.left = `${this.divPosition.x - 13.8781}px`;
-        this.div.style.top = `${this.divPosition.y - 41.5054}px`;
-
-      }
-      if (this.div.style.display !== this.display) {
-        this.div.style.display = this.display;
-      }
-      // console.log(this.div.parentNode.length);
-
-    }
-
-    USGSOverlay.prototype.onRemove = function () {
-      if (this.div.parentNode) {
-        this.div.parentNode.removeChild(this.div)
-        this.div = null
+        var panes = this.getPanes();
+        panes[setPaneName].appendChild(div);
       }
     }
 
-    return USGSOverlay;
+    USGSOverlay.prototype.draw = () => {
+      // const { google } = this.props
+      if (this.div) {
+        let position = new window.google.maps.LatLng(this.latlng.lat, this.latlng.lng);
+        var pos = this.getProjection().fromLatLngToDivPixel(position);
+        this.div.style.left = pos.x + 'px';
+        this.div.style.top = pos.y + 'px';
+      }
+    }
+
+    USGSOverlay.prototype.getPosition = function () {
+      return this.latlng;
+    }
+
+    return USGSOverlay
+
+    //  var myLatlng = new google.maps.LatLng(position.lat, position.lng);
+
+    //   var useOverlay = new USGSOverlay(
+    //     this.props.google,
+    //     document.createElement('div'),
+    //     myLatlng,
+    //     this.props.bounds,
+    //     this.props.map,
+    //     {},
+    //     this.props.setPaneName,
+    //     this.props.children
+    //   );
+
+    // var positions = [{ lat: position.lat, lng: position.lng }]
+    // positions.push({ lat: position.lat, lng: position.lng })
+    // console.log(positions);
+
+    // useOverlay.latlng = { lat: position.lat, lng: position.lng };
+    // useOverlay.draw();
+    // setInterval(function(){
+    //   console.log({ lat: position.lat, lng: position.lng });
+    //   useOverlay.latlng = { lat: position.lat, lng: position.lng }
+    //   useOverlay.draw();
+    // }, 1000);
+
   }
 
 
@@ -142,19 +145,33 @@ export class OverlayView extends React.Component {
     //   google, map, elementType, setPaneName, position, bounds, children, getPixelPositionOffset
     // } = this.props;
 
+    var { position, elementType } = this.props
+    var myLatlng = new google.maps.LatLng(position.lat, position.lng);
 
     var USGSOverlay = this.renderOverlayView()
-    var overlayView = new USGSOverlay(
-      document.createElement(`${this.props.elementType}`),
-      this.props.setPaneName,
-      this.props.position,
+    var useOverlay = USGSOverlay(
+      this.props.google,
+      elementType,
+      myLatlng,
       this.props.bounds,
-      this.props.children,
-      this.props.getPixelPositionOffset,
-      this.props.map
+      this.props.map,
+      {},
+      this.props.setPaneName,
+      this.props.children
     );
 
-    overlayView.setMap(this.props.map)
+
+    // var positions = [{ lat: position.lat, lng: position.lng }]
+    // positions.push({ lat: position.lat, lng: position.lng })
+    // console.log(positions);
+
+    useOverlay.latlng = { lat: position.lat, lng: position.lng };
+    useOverlay.draw()
+    // setInterval(function(){
+    //   console.log({ lat: position.lat, lng: position.lng });
+    //   useOverlay.latlng = { lat: position.lat, lng: position.lng }
+    //   useOverlay.draw
+    // }, 1000);
 
     return (
       <Fragment>

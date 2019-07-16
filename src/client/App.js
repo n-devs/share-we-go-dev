@@ -21,9 +21,11 @@ class App extends React.Component {
     });
 
   }
+
   render() {
 
     // let { from } = this.props.location.state || { from: { pathname: "/protected" } };
+    // console.log(this.state.position);
     
 
     return (
@@ -32,7 +34,7 @@ class App extends React.Component {
         <View style={view_style.container} >
           {/* <Switch location={this.location}> */}
             <Route path="/login" component={Login} />
-            <PrivateRoute path="/protected" component={PrivateView} />
+            <PrivateRoute  path="/protected" component={PrivateView} />
           {/* </Switch> */}
         </View>
       </Router>
