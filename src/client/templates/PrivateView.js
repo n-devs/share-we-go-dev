@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import View from '../components/View';
-import Maps from '../components/Maps'
+import Maps from '../components/Maps';
 
 class PrivateView extends React.Component {
     constructor(props) {

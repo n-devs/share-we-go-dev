@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect, withRouter } from "react-router-dom";
 import firebase from 'firebase';
 import logo from './logo.svg';
+import posed, { PoseGroup } from 'react-pose';
 import './App.css';
 import AuthView from './templates/AuthView';
 import LogoView from './templates/LogoView';
@@ -9,9 +10,11 @@ import PrivateView from './templates/PrivateView';
 import View from './components/View';
 
 
+
 class App extends React.Component {
   state = { redirectToReferrer: false }
   componentDidMount() {
+    document.firstElementChild.style.zoom = "reset";
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         fakeAuth.authenticate(() => {
@@ -26,17 +29,27 @@ class App extends React.Component {
 
     // let { from } = this.props.location.state || { from: { pathname: "/protected" } };
     // console.log(this.state.position);
-    
+    const RouteContainer = posed.div({
+      enter: { opacity: 1, delay: 300, beforeChildren: true },
+      exit: { opacity: 0 }
+    });
+
 
     return (
       <Router>
-        <Redirect to="/protected" />
-        <View style={view_style.container} >
-          {/* <Switch location={this.location}> */}
-            <Route path="/login" component={Login} />
-            <PrivateRoute  path="/protected" component={PrivateView} />
-          {/* </Switch> */}
-        </View>
+        <Route render={({ location }) => (
+          <PoseGroup>
+            <RouteContainer key={location.pathname}>
+              <Redirect to="/protected" />
+              <View style={view_style.container} >
+                <Switch location={location}>
+                  <Route path="/login" component={Login} />
+                  <PrivateRoute path="/protected" component={PrivateView} />
+                </Switch>
+              </View>
+            </RouteContainer>
+          </PoseGroup>
+        )} />
       </Router>
     )
   }
@@ -54,6 +67,10 @@ const fakeAuth = {
   }
 };
 
+const PrivateRouteContainer = posed.div({
+  enter: { opacity: 1, delay: 50, beforeChildren: true },
+  exit: { opacity: 0 }
+});
 
 function PrivateRoute({ component: Component, ...rest }) {
   return (
@@ -93,7 +110,7 @@ class Login extends Component {
         fakeAuth.authenticate(() => {
           this.setState({ redirectToReferrer: true });
         });
-      }else{
+      } else {
         this.setState({ redirectToReferrer: false });
       }
     });

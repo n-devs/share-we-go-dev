@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 // import { getOffsetOverride, getLayoutStyles } from "./dom-helper"
 import prettyFormat from "pretty-format";
 import renderer from "react-test-renderer";
+import './style.css'
 const { ReactTestComponent } = prettyFormat.plugins;
 
 const wrappedPromise = function () {
@@ -44,15 +45,17 @@ export class OverlayView extends React.Component {
   }
 
   renderOverlayView() {
-    // var { google,elementType,setPaneName ,position} = this.props
+    const {
+      google,
+    } = this.props;
 
-    if (!window.google) {
+    if (!google) {
       return null
     }
 
-    function USGSOverlay(google, elementType, latlng, bounds, map, args, setPaneName, children) {
+    function USGSOverlay(elementType, setPaneName, latlng, bounds, children, map, args) {
       // this.google = google;
-      this.elementType = "div";
+      this.elementType = elementType;
       this.latlng = latlng;
       this.bounds = bounds;
       this.map = map;
@@ -60,117 +63,131 @@ export class OverlayView extends React.Component {
       this.setPaneName = setPaneName;
       this.children = children;
       this.setMap(map);
+
+
     }
 
-    USGSOverlay.prototype = new window.google.maps.OverlayView();
+    USGSOverlay.prototype = new window.google.maps.OverlayView;
 
     USGSOverlay.prototype.onAdd = function () {
       var self = this;
       var div = this.div;
       // const { google } = this.props
-      if (!div) {
-        // Generate marker html
-        div = this.div = document.createElement('div');
-        div.className = 'custom-marker';
-        div.style.position = 'absolute';
-        var innerDiv = document.createElement(`${elementType}`);
-        innerDiv.className = 'custom-marker-inner';
-        innerDiv.innerHTML = prettyFormat(renderer.create(this.children), {
-          plugins: [ReactTestComponent],
-          printFunctionName: false
-        });
-        div.appendChild(innerDiv);
+      // if (this.elementType) {
+      // Generate marker html
+      div = this.div = document.createElement(`${this.elementType}`);
+      div.className = 'custom-marker';
+      div.style.position = 'absolute';
+      this.innerDiv = document.createElement('div');
+      this.innerDiv.className = 'custom-marker-inner';
+      this.innerDiv.innerHTML = prettyFormat(renderer.create(this.children), {
+        plugins: [ReactTestComponent],
+        printFunctionName: false
+      });
 
-        if (typeof (self.args.marker_id) !== 'undefined') {
-          div.dataset.marker_id = self.args.marker_id;
-        }
+      this.div.appendChild(this.innerDiv);
+      // google.maps.OverlayView.preventMapHitsFrom(this.innerDiv);
 
-        window.google.maps.event.addDomListener(div, "click", function (event) {
-          window.google.maps.event.trigger(self, "click");
-        });
-
-        var panes = this.getPanes();
-        panes[setPaneName].appendChild(div);
+      if (typeof (self.args.marker_id) !== 'undefined') {
+        this.elementType.dataset.marker_id = self.args.marker_id;
       }
+
+      google.maps.event.addDomListener(div, "click", function (event) {
+        google.maps.event.trigger(self, "click");
+      });
+
+      var panes = this.getPanes();
+      panes[this.setPaneName].appendChild(div);
+      // }
     }
 
-    USGSOverlay.prototype.draw = () => {
+    USGSOverlay.prototype.draw = function () {
       // const { google } = this.props
-      if (this.div) {
-        let position = new window.google.maps.LatLng(this.latlng.lat, this.latlng.lng);
-        var pos = this.getProjection().fromLatLngToDivPixel(position);
-        this.div.style.left = pos.x + 'px';
-        this.div.style.top = pos.y + 'px';
-      }
+      // if (this.innerDiv) {
+      let position = new google.maps.LatLng(this.latlng.lat, this.latlng.lng);
+      var pos = this.getProjection().fromLatLngToDivPixel(position);
+      console.log(position);
+
+      this.div.style.left = pos.x + 'px';
+      this.div.style.top = pos.y + 'px';
+      // }
+
+      // console.log(this.latlng);
+
+      // if (this.div.style.display !== this.display) {
+      //   this.div.style.display = this.display;
+      // }
     }
 
     USGSOverlay.prototype.getPosition = function () {
       return this.latlng;
     }
 
-    return USGSOverlay
+    USGSOverlay.prototype.onRemove = function () {
+      this.div.parentNode.removeChild(this.innerDiv);
+      this.div = null;
+    };
 
-    //  var myLatlng = new google.maps.LatLng(position.lat, position.lng);
+    var myLatlng = new google.maps.LatLng(this.props.position.lat, this.props.position.lng);
 
-    //   var useOverlay = new USGSOverlay(
-    //     this.props.google,
-    //     document.createElement('div'),
-    //     myLatlng,
-    //     this.props.bounds,
-    //     this.props.map,
-    //     {},
-    //     this.props.setPaneName,
-    //     this.props.children
-    //   );
+    // var USGSOverlay = this.renderOverlayView()
 
-    // var positions = [{ lat: position.lat, lng: position.lng }]
-    // positions.push({ lat: position.lat, lng: position.lng })
-    // console.log(positions);
+    var overlayView = new USGSOverlay(
+      this.props.elementType,
+      this.props.setPaneName,
+      myLatlng,
+      this.props.bounds,
+      this.props.children,
+      this.props.map,
+      {},
+    );
 
-    // useOverlay.latlng = { lat: position.lat, lng: position.lng };
-    // useOverlay.draw();
-    // setInterval(function(){
-    //   console.log({ lat: position.lat, lng: position.lng });
-    //   useOverlay.latlng = { lat: position.lat, lng: position.lng }
-    //   useOverlay.draw();
-    // }, 1000);
+    // overlayView.setMap(this.props.map)
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(function (position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        overlayView.latlng = pos
+        // map.setCenter(pos);
+      }, function () {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
 
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      // infoWindow.setPosition(pos);
+      // infoWindow.setContent(browserHasGeolocation ?
+      //     'Error: The Geolocation service failed.' :
+      //     'Error: Your browser doesn\'t support geolocation.');
+      // infoWindow.open(map);
+    }
   }
 
 
 
 
+
+
   render() {
-    // var {
-    //   google, map, elementType, setPaneName, position, bounds, children, getPixelPositionOffset
-    // } = this.props;
 
-    var { position, elementType } = this.props
-    var myLatlng = new google.maps.LatLng(position.lat, position.lng);
-
-    var USGSOverlay = this.renderOverlayView()
-    var useOverlay = USGSOverlay(
-      this.props.google,
-      elementType,
-      myLatlng,
-      this.props.bounds,
-      this.props.map,
-      {},
-      this.props.setPaneName,
-      this.props.children
-    );
-
-
-    // var positions = [{ lat: position.lat, lng: position.lng }]
-    // positions.push({ lat: position.lat, lng: position.lng })
+this.renderOverlayView()
+    // var positions = [{ lat:position.lat, lng:position.lng }]
+    // positions.push({ lat:position.lat, lng:position.lng })
     // console.log(positions);
 
-    useOverlay.latlng = { lat: position.lat, lng: position.lng };
-    useOverlay.draw()
-    // setInterval(function(){
-    //   console.log({ lat: position.lat, lng: position.lng });
-    //   useOverlay.latlng = { lat: position.lat, lng: position.lng }
-    //   useOverlay.draw
+    // this.renderOverlayView().latlng = { lat: position.lat, lng: position.lng };
+    // overlayView.draw;
+    // this.renderOverlayView().setMap(this.props.map)
+    // setInterval(function () {
+    //   console.log({ lat:position.lat, lng:position.lng });
+    //   overlayView.latlng = { lat:position.lat, lng:position.lng }
+    //   // overlayView.draw();
     // }, 1000);
 
     return (

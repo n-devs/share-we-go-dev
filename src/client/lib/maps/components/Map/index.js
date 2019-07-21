@@ -272,7 +272,7 @@ class GoogleMap extends React.Component {
 }
 
 GoogleMap.propTypes = {
-    DrawingOnMap: PropTypes.func,
+    DrawingOnMap: PropTypes.func.isRequired,
     google: PropTypes.object,
     opts: PropTypes.shape({
         options: PropTypes.oneOfType([
