@@ -1,8 +1,8 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+// import IconButton from '@material-ui/core/IconButton';
+// import MenuIcon from '@material-ui/icons/Menu';
 import PropsTypes from 'prop-types';
 import { ThemeProvider,withStyles   } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -21,7 +21,9 @@ const theme = createMuiTheme({
 
 class Bar extends React.Component {
     render() {
+        // รับค่า ความยาวของขนาดจอ ไว้ในตัวแปล w 
         var w = window.innerWidth
+        // รับค่า ที่ถ่ายทอดมาจาก this.props.classes ให้อยู่ในตัวแปล classes
         const {classes} =this.props
         return (
             <div style={{
@@ -82,7 +84,7 @@ Bar.propsTypes = {
     map: PropsTypes.object
 }
 
-
+// กำหนด style
 const styles = {
     gutters:{
         paddingLeft:25,

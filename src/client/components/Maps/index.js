@@ -1,8 +1,8 @@
 import React from 'react';
-import * as firebase from 'firebase';
-import { Map, ConnectApiMaps, OverlayView } from '../lib/maps';
+// import * as firebase from 'firebase';
+import { Map, ConnectApiMaps } from '../../lib/maps';
 import { withRouter } from 'react-router-dom';
-import Bar from '../components/Bar';
+import Bar from '../Bar';
 
 
 class Maps extends React.Component {
@@ -14,12 +14,16 @@ class Maps extends React.Component {
 
 
     render() {
+        // ค้นหา ตัวแปล google และ position ใน this.props
         const { google, position } = this.props
         // let { position } = this.state
+        // กำหนดตัวแปล latlng
         var latlng;
         if (!position) {
+            // แทนค่า ตัวแปล latlng ลงไป
             latlng = { lat: 14.013235199999999, lng: 100.6985216 }
         } else {
+            // แทนค่า ตัวแปล latlng ลงไป
             latlng = { lat: position.lat, lng: position.lng }
         }
 
@@ -80,6 +84,7 @@ class Maps extends React.Component {
 
                     CustomMarker.prototype.draw = function () {
                         if (this.div) {
+                            // กำหนด ตำแหน่ง ของhtml ที่สร้างไว้
                             let position = new google.maps.LatLng(this.latlng.lat, this.latlng.lng);
                             var pos = this.getProjection().fromLatLngToDivPixel(position);
                             this.div.style.left = pos.x + 'px';
@@ -100,7 +105,7 @@ class Maps extends React.Component {
                     );
 
 
-
+                    // ระบุทำแหน่งปัจจุบัย
                     if (navigator.geolocation) {
                         navigator.geolocation.watchPosition(function (position) {
                             var pos = {
@@ -143,6 +148,7 @@ class Maps extends React.Component {
 
 // const Loading = () => <div>Fancy loading container</div>;
 
+// connect api google maps
 export default withRouter(ConnectApiMaps({
     apiKey: "AIzaSyCrGaroYIOPAu9IakE6gEzY2sa5t23mCpQ",
     libraries: ['places', 'geometry'],

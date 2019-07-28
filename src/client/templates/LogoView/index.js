@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import posed, { PoseGroup } from 'react-pose';
-import View from '../components/View';
-import Image from '../components/Image';
-import LOGO from '../images/LOGO_AI_V7.png';
+import View from '../../components/View';
+import Image from '../../components/Image';
+import LOGO from '../../images/LOGO_AI_V7.png';
 
 class LogoView extends React.Component {
     render() {
+        // กำหนด animation
         const AinmationRoute = posed.div({
             enter: { opacity: 0},
             exit: { opacity: 1, delay: 1, beforeChildren: true }
@@ -20,6 +21,7 @@ class LogoView extends React.Component {
     }
 }
 
+// กำหนด style
 const view_style = {
     container: {
         flex: 1,

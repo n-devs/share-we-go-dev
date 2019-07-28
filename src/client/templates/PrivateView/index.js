@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import View from '../components/View';
-import Maps from '../components/Maps';
+import View from '../../components/View';
+import Maps from '../../components/Maps';
 
 class PrivateView extends React.Component {
     constructor(props) {
@@ -9,6 +9,7 @@ class PrivateView extends React.Component {
     }
 
     componentDidMount() {
+        // ระบุตำแหน่ง
         navigator.geolocation.watchPosition((position) => {
             // this.pos = this.props.google.maps.LatLng(position.coords.latitude,position.coords.longitude)
             this.setState({ position: { lat: position.coords.latitude, lng: position.coords.longitude } })

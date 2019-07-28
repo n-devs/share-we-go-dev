@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 // import { Redirect } from "react-router-dom";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import View from '../components/View';
+import View from '../../components/View';
 
 
 
@@ -53,7 +53,7 @@ class AuthView extends React.Component {
     }
 }
 
-
+// กำหนด style
 const view_style = {
     container: {
         flex: 1,

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import PropsTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import { ThemeProvider, withStyles } from '@material-ui/styles';
@@ -6,11 +6,12 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
+// import SearchIcon from '@material-ui/icons/Search';
 import DirectionsIcon from '@material-ui/icons/Directions';
 
-import Autocomplete from '../lib/maps/components/Places/Autocomplete';
+import Autocomplete from '../../lib/maps/components/Places/Autocomplete';
 
+// กำหนด  theme view
 const theme = createMuiTheme({
     palette: {
         primary: {
@@ -32,17 +33,22 @@ class Search extends React.Component {
     }
 
     componentDidMount() {
+        //  set mapApiLoaded in object state ให้ค่า = true
         this.setState({
             mapApiLoaded: true,
         });
     };
 
     setPlace = ({ place } = this.props) => {
+        // รับค่า ที่ถ่ายทอดมาจาก this.props.place ให้อยู่ในตัวแปล place
+        // ทำการ กำหนด places ใน state ให้ = ค่าที่อยู่ใน place
         this.setState({ places: [place] });
     };
 
     render() {
-        const { mapApiLoaded, google } = this.state;
+        // รับค่า ที่ถ่ายทอดมาจาก this.state.google ให้อยู่ในตัวแปล google
+        const { google } = this.state;
+        // รับค่า ที่ถ่ายทอดมาจาก this.props.classes ให้อยู่ในตัวแปล classes
         const { classes } = this.props
         return (
             <Paper className={classes.root} elevation={2} >
@@ -70,6 +76,7 @@ class Search extends React.Component {
     }
 }
 
+// กำหนด style
 const styles = {
     root: {
         borderRadius: 10,

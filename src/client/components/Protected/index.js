@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import Text from '../Text';
 
 class Protected extends React.Component {
     render() {
@@ -8,10 +9,5 @@ class Protected extends React.Component {
     }
 }
 
-class Text extends Component {
-    render() {
-    return <span>{this.props.children}</span>
-    }
-}
 
 export default Protected;
