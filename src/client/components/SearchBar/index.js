@@ -6,7 +6,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import PropsTypes from 'prop-types';
 import { ThemeProvider,withStyles   } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
-import Search from '../Search';
 import './style.css'
 
 const theme = createMuiTheme({
@@ -19,7 +18,7 @@ const theme = createMuiTheme({
 
 
 
-class Bar extends React.Component {
+class SearchBar extends React.Component {
     render() {
         // รับค่า ความยาวของขนาดจอ ไว้ในตัวแปล w 
         var w = window.innerWidth
@@ -40,37 +39,7 @@ class Bar extends React.Component {
                         <Toolbar
                         className={classes.gutters}
                         >
-                            {/* <IconButton
-                            edge="start"
-                            // className={classes.menuButton}
-                            color="inherit"
-                            aria-label="Open drawer"
-                        >
-                            <MenuIcon />
-                        </IconButton> */}
-                            <Search map={this.props.map} google={this.props.google} />
-                            {/* <div style={{
-                            flexGrow: 1,
-                            position: 'absolute'
-                        }} />
-                        <div style={{
-                            // display: 'flex',
-                            width: '-webkit-fill-available'
-                        }}>
-                            <IconButton
-                                aria-label="Account of current user"
-                                aria-controls="primary-search-account-menu"
-                                aria-haspopup="true"
-                                color="inherit"
-                                style={{
-                                    padding: 0,
-                                    fontSize: '0.8rem',
-                                    float: 'right'
-                                }}
-                            >
-                                <p>แชร์ตำแหน่ง</p>
-                            </IconButton>
-                        </div> */}
+                            {this.props.children}
                         </Toolbar>
                     </AppBar>
                 </ThemeProvider>
@@ -79,7 +48,7 @@ class Bar extends React.Component {
     }
 }
 
-Bar.propsTypes = {
+SearchBar.propsTypes = {
     google: PropsTypes.object,
     map: PropsTypes.object
 }
@@ -93,4 +62,4 @@ const styles = {
 }
 
 
-export default withStyles(styles)(Bar);
+export default withStyles(styles)(SearchBar);

@@ -1,8 +1,10 @@
 import React from 'react';
 // import * as firebase from 'firebase';
 import { Map, ConnectApiMaps } from '../../lib/maps';
-import { withRouter } from 'react-router-dom';
-import Bar from '../Bar';
+import { withRouter, Link } from 'react-router-dom';
+import SearchBar from '../SearchBar';
+import Search from '../Search';
+import './style.css';
 
 
 class Maps extends React.Component {
@@ -15,8 +17,8 @@ class Maps extends React.Component {
 
     render() {
         // ค้นหา ตัวแปล google และ position ใน this.props
-        const { google, position } = this.props
-        // let { position } = this.state
+        const { google, position } = this.props;
+
         // กำหนดตัวแปล latlng
         var latlng;
         if (!position) {
@@ -83,12 +85,13 @@ class Maps extends React.Component {
                     };
 
                     CustomMarker.prototype.draw = function () {
+                        // มี bug icon ไม่เกาะ map
                         if (this.div) {
                             // กำหนด ตำแหน่ง ของhtml ที่สร้างไว้
-                            let position = new google.maps.LatLng(this.latlng.lat, this.latlng.lng);
-                            var pos = this.getProjection().fromLatLngToDivPixel(position);
-                            this.div.style.left = pos.x + 'px';
-                            this.div.style.top = pos.y + 'px';
+                           this.position = new google.maps.LatLng(this.latlng.lat, this.latlng.lng);
+                            this.pos = this.getProjection().fromLatLngToDivPixel(this.position);
+                            this.div.style.left = this.pos.x + 'px';
+                            this.div.style.top = this.pos.y + 'px';
                         }
                     };
 
@@ -126,31 +129,17 @@ class Maps extends React.Component {
 
                     }
 
-
                 }}
             >
-
-                <Bar google={this.props.google} map={this.props.map} />
-                {/* <div style={{ position: 'absolute' }}> */}
-                {/* <button onClick={() => {
-                        firebase.auth().signOut().then(function() {
-                            // Sign-out successful.
-                            window.location.href='/'
-                          }, function(error) {
-                            // An error happened.
-                          });
-                    }}>LOGOUT</button> */}
-                {/* </div> */}
+                <SearchBar >
+                    <Search {...this.props} />
+                </SearchBar>
             </Map>
         )
     }
 }
 
-// const Loading = () => <div>Fancy loading container</div>;
-
-// connect api google maps
 export default withRouter(ConnectApiMaps({
     apiKey: "AIzaSyCrGaroYIOPAu9IakE6gEzY2sa5t23mCpQ",
     libraries: ['places', 'geometry'],
-    // LoadingContainer: Loading
 })(Maps));

@@ -5,9 +5,11 @@ import { ThemeProvider, withStyles } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import HomeIcon from '@material-ui/icons/Home';
+import { Link } from 'react-router-dom';
+
 // import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
+import AddLocationIcon from '@material-ui/icons/AddLocation';
 
 import Autocomplete from '../../lib/maps/components/Places/Autocomplete';
 
@@ -52,9 +54,11 @@ class Search extends React.Component {
         const { classes } = this.props
         return (
             <Paper className={classes.root} elevation={2} >
-                <IconButton className={classes.iconButton} aria-label="Menu">
-                    <MenuIcon />
-                </IconButton>
+                <Link to={`${this.props.match.path}/home`}>
+                    <IconButton className={classes.iconButton} aria-label="Menu">
+                        <HomeIcon />
+                    </IconButton>
+                </Link>
                 <Autocomplete
                     map={this.props.map}
                     google={google}
@@ -67,9 +71,11 @@ class Search extends React.Component {
                 />
                 <Divider className={classes.divider} />
                 <ThemeProvider theme={theme}>
-                    <IconButton color="primary" className={classes.iconButton} aria-label="Directions">
-                        <DirectionsIcon />
-                    </IconButton>
+                    <Link to={`${this.props.match.path}/share_location`} >
+                        <IconButton color="primary" className={classes.iconButton}>
+                            <AddLocationIcon />
+                        </IconButton>
+                    </Link>
                 </ThemeProvider>
             </Paper>
         )
@@ -85,7 +91,7 @@ const styles = {
             backgroundColor: 'rgba(255, 255, 255, 0.79)',
         },
         marginRight: 5,
-        marginLeft: 5,
+        marginLeft: 15,
         marginTop: 40,
         display: 'flex',
         alignItems: 'center',
