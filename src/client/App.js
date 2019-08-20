@@ -19,6 +19,12 @@ class App extends React.Component {
     // บล็อกการ zoom
     document.firstElementChild.style.zoom = "reset";
 
+      // ระบุตำแหน่ง
+        navigator.geolocation.watchPosition((position) => {
+            // this.pos = this.props.google.maps.LatLng(position.coords.latitude,position.coords.longitude)
+            this.setState({ position: { lat: position.coords.latitude, lng: position.coords.longitude } })
+        })
+
     // เชคค่าสถานะ auth ของ firebase
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -38,7 +44,7 @@ class App extends React.Component {
 
 
     return (
-      <Router>
+      <Router  position={this.state.position}>
         <Route render={({ location }) => (
           <View style={view_style.container} >
           <Redirect to="/protected" />
@@ -81,11 +87,11 @@ function PrivateRoute({ component: Component, ...rest }) {
         fakeAuth.isAuthenticated ? (
           <PoseGroup>
             <RouteContainer key={location.pathname}>
-              <Switch location={props.location}>
+              {/* <Switch location={props.location}> */}
                 <Route exact path="/protected" component={PrivateView} />
                 <Route path="/protected/home" component={HomeView} />
                 <Route path="/protected/share_location" component={ShareLocationView} />
-              </Switch>
+              {/* </Switch> */}
             </RouteContainer>
           </PoseGroup>
         ) : (

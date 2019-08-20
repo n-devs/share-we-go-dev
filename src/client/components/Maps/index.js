@@ -17,18 +17,20 @@ class Maps extends React.Component {
 
     render() {
         // ค้นหา ตัวแปล google และ position ใน this.props
-        const { google, position } = this.props;
+        var { google, position } = this.props;
 
         // กำหนดตัวแปล latlng
-        var latlng;
+        let latlng;
         if (!position) {
             // แทนค่า ตัวแปล latlng ลงไป
             latlng = { lat: 14.013235199999999, lng: 100.6985216 }
+           
         } else {
             // แทนค่า ตัวแปล latlng ลงไป
             latlng = { lat: position.lat, lng: position.lng }
+            
         }
-
+        
 
         return (
             <Map
@@ -54,6 +56,9 @@ class Maps extends React.Component {
                         this.args = args;
                         this.children = children;
                         this.setMap(map);
+
+                        
+                        
                     }
 
                     CustomMarker.prototype = new google.maps.OverlayView();
@@ -88,10 +93,12 @@ class Maps extends React.Component {
                         // มี bug icon ไม่เกาะ map
                         if (this.div) {
                             // กำหนด ตำแหน่ง ของhtml ที่สร้างไว้
-                           this.position = new google.maps.LatLng(this.latlng.lat, this.latlng.lng);
-                            this.pos = this.getProjection().fromLatLngToDivPixel(this.position);
-                            this.div.style.left = this.pos.x + 'px';
-                            this.div.style.top = this.pos.y + 'px';
+                           let positionA = new google.maps.LatLng(this.latlng.lat, this.latlng.lng);
+
+                           this.pos = this.getProjection().fromLatLngToDivPixel(positionA);
+                           console.log( this.pos);
+                           this.div.style.left = this.pos.x + 'px';
+                           this.div.style.top = this.pos.y + 'px';
                         }
                     };
 
@@ -100,6 +107,8 @@ class Maps extends React.Component {
                     };
 
                     var myLatlng = new google.maps.LatLng(latlng.lat, latlng.lng);
+
+                    // console.log(myLatlng);
 
                     var marker1 = new CustomMarker(
                         myLatlng,
