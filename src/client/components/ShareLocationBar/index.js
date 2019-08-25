@@ -19,6 +19,7 @@ const share_location_bar_theme = createMuiTheme({
 
 
 
+
 class ShareLocationBar extends React.Component {
     render() {
         // รับค่า ความยาวของขนาดจอ ไว้ในตัวแปล w 
@@ -34,7 +35,6 @@ class ShareLocationBar extends React.Component {
             }}>
                 <ThemeProvider theme={share_location_bar_theme}>
                     <AppBar position="static"
-                        color='default'
                         elevation={1}
                     >
                         <Toolbar

@@ -9,6 +9,7 @@
     "@material-ui/icons": "^4.2.1",
     "@react-google-maps/api": "^1.4.2",
     "babel-polyfill": "^6.26.0",
+    "clsx": "^1.0.4",
     "express": "^4.17.1",
     "firebase": "^6.2.4",
     "invariant": "^2.2.4",

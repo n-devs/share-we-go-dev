@@ -1,23 +1,10 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 // import { Redirect } from "react-router-dom";
+import firebaseConfig from '../../firebase/firebase-config'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import View from '../../components/View';
 
-
-
-
-// Configure Firebase.
-const config = {
-    apiKey: "AIzaSyAavAERYgTafnnYxjIGaW9Xb7GaUdgSvLk",
-    authDomain: "share-we-go.firebaseapp.com",
-    databaseURL: "https://share-we-go.firebaseio.com",
-    projectId: "share-we-go",
-    storageBucket: "share-we-go.appspot.com",
-    messagingSenderId: "950367710306",
-    appId: "1:950367710306:web:219271895378fa7e"
-  };
-  firebase.initializeApp(config);
   
   // Configure FirebaseUI.
   const uiConfig = {
