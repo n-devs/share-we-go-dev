@@ -14,7 +14,7 @@
     "firebase": "^6.2.4",
     "invariant": "^2.2.4",
     "little-loader": "^0.2.0",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.21",
     "lodash.isempty": "^4.4.0",
     "material-ui": "^0.17.0",
     "pretty-format": "^24.8.0",
