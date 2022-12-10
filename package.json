@@ -10,7 +10,7 @@
     "@react-google-maps/api": "^1.4.2",
     "babel-polyfill": "^6.26.0",
     "clsx": "^1.0.4",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "firebase": "^6.2.4",
     "invariant": "^2.2.4",
     "little-loader": "^0.2.0",
